@@ -3,26 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project 1 - Coding Project</title>
+    <title>WoW Hardcore Random Picker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            text-align: center;
             padding: 20px;
-            background-color: #f4f4f4;
         }
-        h1 {
-            color: #333;
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 10px;
         }
-        p {
-            margin: 10px 0;
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
         }
     </style>
 </head>
 <body>
-    <h1>Project 1</h1>
-    <p>This is the project page for Project 1. Here you can showcase your project details, features, screenshots, and more.</p>
-    
-    <a href="../../index.html">Back to Homepage</a>
+
+    <h1>World of Warcraft Hardcore Random Race/Class Picker</h1>
+    <p>Select your play style:</p>
+
+    <!-- Solo and Duos buttons -->
+    <button onclick="startSolo()">Solo</button>
+    <button onclick="startDuo()">Duos</button>
+
+    <!-- Placeholder to show results -->
+    <div id="result"></div>
+
+    <!-- JavaScript code for the logic -->
+    <script>
+        const factions = ["Alliance", "Horde"];
+
+        const allianceRaces = {
+            Dwarves: ["Hunter", "Paladin", "Priest", "Rogue", "Warrior"],
+            Gnomes: ["Mage", "Rogue", "Warlock", "Warrior"],
+            Humans: ["Mage", "Paladin", "Priest", "Rogue", "Warlock", "Warrior"],
+            "Night Elves": ["Druid", "Hunter", "Priest", "Rogue", "Warrior"]
+        };
+
+        const hordeRaces = {
+            Orcs: ["Hunter", "Rogue", "Shaman", "Warlock", "Warrior"],
+            Tauren: ["Druid", "Hunter", "Shaman", "Warrior"],
+            Trolls: ["Hunter", "Mage", "Priest", "Rogue", "Shaman", "Warrior"],
+            Undead: ["Mage", "Priest", "Rogue", "Warlock", "Warrior"]
+        };
+
+        const allianceSharedStartZones = {
+            Dwarves: ["Dwarves", "Gnomes"],
+            Gnomes: ["Gnomes", "Dwarves"]
+        };
+
+        const hordeSharedStartZones = {
+            Orcs: ["Orcs", "Trolls"],
+            Trolls: ["Trolls", "Orcs"]
+        };
+
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function startSolo() {
+            const faction = getRandomElement(factions);
+            let race, className;
+
+            if (faction === "Alliance") {
+                race = getRandomElement(Object.keys(allianceRaces));
+                className = getRandomElement(allianceRaces[race]);
+            } else {
+                race = getRandomElement(Object.keys(hordeRaces));
+                className = getRandomElement(hordeRaces[race]);
+            }
+
+            document.getElementById("result").innerHTML = `
+                <h2>Solo Player</h2>
+                <p>Faction: ${faction}</p>
+                <p>Race: ${race}</p>
+                <p>Class: ${className}</p>
+            `;
+        }
+
+        function startDuo() {
+            const faction = getRandomElement(factions);
+            let race1, race2, class1, class2;
+
+            if (faction === "Alliance") {
+                race1 = getRandomElement(Object.keys(allianceRaces));
+                class1 = getRandomElement(allianceRaces[race1]);
+
+                // Special logic for Dwarves and Gnomes
+                if (race1 === "Dwarves" || race1 === "Gnomes") {
+                    race2 = getRandomElement(allianceSharedStartZones[race1]);
+                } else {
+                    race2 = race1; // Same race for other Alliance races
+                }
+                class2 = getRandomElement(allianceRaces[race2]);
+            } else {
+                race1 = getRandomElement(Object.keys(hordeRaces));
+                class1 = getRandomElement(hordeRaces[race1]);
+
+                // Special logic for Orcs and Trolls
+                if (race1 === "Orcs" || race1 === "Trolls") {
+                    race2 = getRandomElement(hordeSharedStartZones[race1]);
+                } else {
+                    race2 = race1; // Same race for other Horde races
+                }
+                class2 = getRandomElement(hordeRaces[race2]);
+            }
+
+            document.getElementById("result").innerHTML = `
+                <h2>Duos</h2>
+                <p>Faction: ${faction}</p>
+                <p>Race 1: ${race1}</p>
+                <p>Class 1: ${class1}</p>
+                <p>Race 2: ${race2}</p>
+                <p>Class 2: ${class2}</p>
+            `;
+        }
+    </script>
+
 </body>
 </html>
-
