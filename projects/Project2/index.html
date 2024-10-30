@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Playlist Title Incrementer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        input, button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>YouTube Playlist Title Incrementer</h1>
+
+    <p>Next title for each playlist:</p>
+    <button onclick="generateNextTitles()">Generate Titles</button>
+
+    <div id="result"></div>
+
+    <script>
+        // Insert your YouTube Data API key here
+        const apiKey = "AIzaSyCPnKihhFTlu7KUZfJEq8VDb0LaIa-13wA";
+
+        // List of playlists with their titles and IDs
+        const playlists = [
+            { title: "World of Warcraft Classic - Hardcore Duos", id: "PLOhy1v1_WRQOtNi4zvdEli6BsSwcqWgWn" },
+            { title: "Diablo IV Series", id: "PLOhy1v1_WRQNr4_UKEGwP2wghsza5wAxV" },
+            // Add more playlists as needed
+        ];
+
+        async function generateNextTitles() {
+            const results = [];
+
+            // Loop through each playlist and fetch its video count
+            for (const playlist of playlists) {
+                try {
+                    const response = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlist.id}&key=${apiKey}&maxResults=50`);
+                    const data = await response.json();
+
+                    if (data.error) {
+                        results.push(`<p>Error fetching playlist "${playlist.title}": ${data.error.message}</p>`);
+                        continue;
+                    }
+
+                    // Calculate the next part number based on the current video count
+                    const videoCount = data.items.length;
+                    const nextPart = videoCount + 1;
+                    const newTitle = `${playlist.title} - Part ${nextPart}`;
+
+                    // Add the result for this playlist
+                    results.push(`<p>Next video title for "<strong>${playlist.title}</strong>": ${newTitle}</p>`);
+                } catch (error) {
+                    results.push(`<p>Error fetching playlist "${playlist.title}": ${error.message}</p>`);
+                    console.error("Error:", error);
+                }
+            }
+
+            // Display all results
+            document.getElementById("result").innerHTML = results.join("");
+        }
+    </script>
+
+</body>
+</html>
