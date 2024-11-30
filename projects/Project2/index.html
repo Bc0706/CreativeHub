@@ -10,6 +10,9 @@
             text-align: center;
             padding: 20px;
         }
+        section {
+            margin-bottom: 30px;
+        }
         input, button {
             font-size: 16px;
             padding: 10px;
@@ -25,13 +28,42 @@
 
     <h1>YouTube Playlist Title Incrementer</h1>
 
-    <p>Next title for each playlist:</p>
-    <button onclick="generateNextTitles()">Generate Titles</button>
-    <button onclick="resetResults()">Clear Results</button>
+    <!-- Section for Days Since Release -->
+    <section>
+        <h2>Days Since Release</h2>
+        <div id="daysSinceRelease"></div>
+    </section>
 
-    <div id="result"></div>
+    <!-- Section for Playlist Titles -->
+    <section>
+        <h2>Next Playlist Titles</h2>
+        <p>Next title for each playlist:</p>
+        <button onclick="generateNextTitles()">Generate Titles</button>
+        <button onclick="resetResults()">Clear Results</button>
+        <div id="result"></div>
+    </section>
 
     <script>
+        // Calculate days since release
+        const releases = [
+            { title: "World of Warcraft: Cataclysm Classic", releaseDate: new Date(2024, 4, 20) }, // May 20, 2024
+            { title: "World of Warcraft: The War Within", releaseDate: new Date(2024, 7, 26) }   // August 26, 2024
+        ];
+
+        function calculateDaysSinceRelease() {
+            const today = new Date();
+            const results = releases.map(release => {
+                const diffTime = today - release.releaseDate;
+                const days = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Convert ms to days
+                return `<p>${release.title} - Day ${days}</p>`;
+            });
+            document.getElementById("daysSinceRelease").innerHTML = results.join("");
+        }
+
+        // Call the function to calculate and display days since release
+        calculateDaysSinceRelease();
+
+        // Playlist titles
         const apiKey = "AIzaSyCPnKihhFTlu7KUZfJEq8VDb0LaIa-13wA";
 
         const playlists = [
