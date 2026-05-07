@@ -43,6 +43,8 @@
         <div id="result"></div>
     </section>
 
+    <script src="config.js"></script>
+
     <script>
         // Calculate days since release
         const releases = [
@@ -65,7 +67,9 @@
         calculateDaysSinceRelease();
 
         // Playlist titles
-        const apiKey = "AIzaSyCPnKihhFTlu7KUZfJEq8VDb0LaIa-13wA";
+        // The key is loaded from config.js, which is generated during deployment.
+        // Do not commit config.js with a real API key.
+        const apiKey = window.YOUTUBE_API_KEY;
 
         const playlists = [
             { title: "World of Warcraft Classic - Hardcore Duos", id: "PLOhy1v1_WRQOtNi4zvdEli6BsSwcqWgWn" },
@@ -77,6 +81,10 @@
         ];
 
         async function getVideoCount(playlistId) {
+            if (!apiKey || apiKey === "PASTE_LOCAL_YOUTUBE_API_KEY_HERE") {
+                throw new Error("YouTube API key is missing. Add YOUTUBE_API_KEY as a GitHub Secret or create config.js locally.");
+            }
+
             let totalVideos = 0;
             let nextPageToken = '';
 
@@ -101,6 +109,11 @@
         async function generateNextTitles() {
             document.getElementById("result").innerHTML = "Loading... Please wait.";
             const results = [];
+
+            if (!apiKey || apiKey === "PASTE_LOCAL_YOUTUBE_API_KEY_HERE") {
+                document.getElementById("result").innerHTML = "YouTube API key is missing. Add YOUTUBE_API_KEY as a GitHub Secret or create config.js locally.";
+                return;
+            }
 
             for (const playlist of playlists) {
                 const videoCount = await getVideoCount(playlist.id);
