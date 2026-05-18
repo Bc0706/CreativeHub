@@ -1,0 +1,20 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create Project2 config.js
+        run: |
+          echo 'window.YOUTUBE_API_KEY = "${{ secrets.YOUTUBE_API_KEY }}";' > projects/Project2/config.js
+
+      # Your existing deploy step goes after this
